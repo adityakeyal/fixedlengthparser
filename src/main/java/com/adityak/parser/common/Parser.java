@@ -4,6 +4,7 @@ import com.adityak.parser.exception.ParserException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ public interface Parser<T> {
      * @param input
      * @return
      */
-    List<T> parse(File input) throws FileNotFoundException, ParserException;
+    List<T> parse(InputStream input) throws FileNotFoundException, ParserException;
 
 
 

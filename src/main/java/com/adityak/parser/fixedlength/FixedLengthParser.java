@@ -4,10 +4,13 @@ import com.adityak.parser.common.Parser;
 import com.adityak.parser.common.configuration.FileConfiguration;
 import com.adityak.parser.common.configuration.ItemConfiguration;
 import com.adityak.parser.exception.ParserException;
+import com.adityak.parser.exception.ValidationException;
 import org.apache.commons.beanutils.BeanUtils;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -21,11 +24,14 @@ public class FixedLengthParser<T> implements Parser<T> {
     private FileConfiguration<T> fileConfiguration;
 
 
-    public List<T> parse(File input) throws ParserException {
+    public List<T> parse(InputStream input) throws ParserException {
+
+
+        List<T> listOfParsedObjects = new LinkedList<T>();
 
 
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(input));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
             String currentLine = null;
             int lineNo = 0;
             String headerLine = null;
@@ -38,7 +44,9 @@ public class FixedLengthParser<T> implements Parser<T> {
                 }
 
                 if(lineNo>=fileConfiguration.getDataLineNo()){
-                    processLine(headerLine , currentLine);
+                    final T processedObject = processLine(headerLine, currentLine);
+                    listOfParsedObjects.add(processedObject);
+
                 }
 
                 
@@ -48,13 +56,14 @@ public class FixedLengthParser<T> implements Parser<T> {
 
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ParserException();
         }
 
-        return null;
+        return listOfParsedObjects;
     }
 
-    private T processLine(String headerLine, String currentDataLine) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+    private T processLine(String headerLine, String currentDataLine) throws IllegalAccessException, InstantiationException, InvocationTargetException, ValidationException {
 
         T newRow = fileConfiguration.getTargetClazz().newInstance();
 
@@ -62,7 +71,7 @@ public class FixedLengthParser<T> implements Parser<T> {
 
 
         for (ItemConfiguration itemConfiguration : fileConfiguration.getHeaderConfiguration()) {
-            String itemValue = headerLine.substring(itemConfiguration.getPosition(), itemConfiguration.getEndPosition());
+            String itemValue = headerLine.substring(itemConfiguration.getPositionIndex(), itemConfiguration.getEndPositionIndex() );
             itemValue = itemConfiguration.removePadding(itemValue);
             if(itemConfiguration.getFieldName()!=null){
                 BeanUtils.setProperty(newRow , itemConfiguration.getFieldName(),itemConfiguration.getConvertedValue(itemValue));
@@ -73,7 +82,7 @@ public class FixedLengthParser<T> implements Parser<T> {
 
         //read the detail
         for (ItemConfiguration itemConfiguration : fileConfiguration.getDetailConfiguration()) {
-            String itemValue = currentDataLine.substring(itemConfiguration.getPosition(), itemConfiguration.getEndPosition());
+            String itemValue = currentDataLine.substring(itemConfiguration.getPositionIndex(), itemConfiguration.getEndPositionIndex());
             itemValue = itemConfiguration.removePadding(itemValue);
             BeanUtils.setProperty(newRow , itemConfiguration.getFieldName(),itemConfiguration.getConvertedValue(itemValue));
         }

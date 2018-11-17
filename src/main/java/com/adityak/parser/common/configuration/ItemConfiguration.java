@@ -1,9 +1,11 @@
 package com.adityak.parser.common.configuration;
 
-import com.adityak.parser.Validator;
+import com.adityak.parser.common.Validator;
 import com.adityak.parser.common.Transformer;
 import com.adityak.parser.common.transformer.BigDecimalTransformer;
 import com.adityak.parser.common.transformer.DateTransformer;
+import com.adityak.parser.common.transformer.NoOpTransformer;
+import com.adityak.parser.exception.ValidationException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.annotation.PostConstruct;
@@ -35,7 +37,7 @@ public class ItemConfiguration {
      * char : String
      * number : BigDeceimal
      */
-    private String type;
+    private String type = "char";
 
     /**
      * Applicable for number types.
@@ -113,12 +115,18 @@ public class ItemConfiguration {
 
     public String removePadding(String itemValue) {
 
+        if(this.getType().equalsIgnoreCase("char")){
+            return itemValue.trim();
+        }
         throw new NotImplementedException();
-
     }
 
-    public Object getConvertedValue(String itemValue) {
-        throw new NotImplementedException();
+    public Object getConvertedValue(String itemValue) throws  ValidationException {
+
+        return this.transformer.transform(itemValue);
+
+
+
     }
 
     public void setValidators(List<Validator> validators) {
@@ -153,8 +161,24 @@ public class ItemConfiguration {
             }
 
 
+            if("char".equalsIgnoreCase(this.getType())){
+                // move this into some enum and create a factory out of the same
+                this.transformer = new NoOpTransformer();
+
+                //add special handling for the format if specified
+            }
+
+
 
         }
 
+    }
+
+    public int getPositionIndex() {
+        return this.getPosition()-1;
+    }
+
+    public int getEndPositionIndex() {
+        return this.getEndPosition()-1;
     }
 }

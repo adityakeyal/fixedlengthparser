@@ -1,4 +1,4 @@
-package com.adityak.parser;
+package com.adityak.parser.common;
 
 import com.adityak.parser.exception.ParserException;
 

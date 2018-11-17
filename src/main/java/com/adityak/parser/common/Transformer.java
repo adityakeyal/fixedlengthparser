@@ -12,5 +12,5 @@ public interface Transformer<S,T> {
      * @param sourceValue
      * @return
      */
-    public T transform(S sourceValue) throws ParseException, ValidationException;
+    public T transform(S sourceValue) throws ValidationException;
 }
