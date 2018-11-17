@@ -1,0 +1,6 @@
+.vcs/
+.idea/
+CVS/
+target/
+*.classes
+*.iml

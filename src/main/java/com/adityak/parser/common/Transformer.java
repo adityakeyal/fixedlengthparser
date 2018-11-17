@@ -1,5 +1,9 @@
 package com.adityak.parser.common;
 
+import com.adityak.parser.exception.ValidationException;
+
+import java.text.ParseException;
+
 public interface Transformer<S,T> {
 
     /**
@@ -8,5 +12,5 @@ public interface Transformer<S,T> {
      * @param sourceValue
      * @return
      */
-    public T transform(S sourceValue);
+    public T transform(S sourceValue) throws ParseException, ValidationException;
 }

@@ -3,7 +3,7 @@ package com.adityak.parser.fixedlength;
 import com.adityak.parser.common.Parser;
 import com.adityak.parser.common.configuration.FileConfiguration;
 import com.adityak.parser.common.configuration.ItemConfiguration;
-import com.adityak.parser.exception.ParsingException;
+import com.adityak.parser.exception.ParserException;
 import org.apache.commons.beanutils.BeanUtils;
 
 import java.io.*;
@@ -21,7 +21,7 @@ public class FixedLengthParser<T> implements Parser<T> {
     private FileConfiguration<T> fileConfiguration;
 
 
-    public List<T> parse(File input) throws ParsingException {
+    public List<T> parse(File input) throws ParserException {
 
 
         try {
@@ -48,7 +48,7 @@ public class FixedLengthParser<T> implements Parser<T> {
 
 
         } catch (Exception e) {
-            throw new ParsingException();
+            throw new ParserException();
         }
 
         return null;

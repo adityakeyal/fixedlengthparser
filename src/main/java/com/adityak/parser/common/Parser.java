@@ -1,6 +1,6 @@
 package com.adityak.parser.common;
 
-import com.adityak.parser.exception.ParsingException;
+import com.adityak.parser.exception.ParserException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,7 +17,7 @@ public interface Parser<T> {
      * @param input
      * @return
      */
-    List<T> parse(File input) throws FileNotFoundException, ParsingException;
+    List<T> parse(File input) throws FileNotFoundException, ParserException;
 
 
 
